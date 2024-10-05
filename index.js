@@ -168,14 +168,29 @@ function movimentosPossiveis(matriz) {
 
     return movimentos;  // Retorna os estados possíveis
 }
-function randonmize() {
-    const id = "estado-inicial"
+
+function randonmize(id) {
+
     var matriz = getMatrizAtual(id)
     for (let i = 0; i < RANDOMMIZE; i++) {
         let estadosPossiveis = movimentosPossiveis(matriz);
         matriz = estadosPossiveis[Math.floor(Math.random() * estadosPossiveis.length)]
     }
     updateState(id,matriz)
+}
+
+function arraysEqual(arr1, arr2) {
+    if (arr1.length !== arr2.length) return false; // Verifica o comprimento
+
+    for (let i = 0; i < arr1.length; i++) {
+        if (Array.isArray(arr1[i]) && Array.isArray(arr2[i])) {
+            // Se ambos os elementos são matrizes, chama a função recursivamente
+            if (!arraysEqual(arr1[i], arr2[i])) return false;
+        } else if (arr1[i] !== arr2[i]) {
+            return false; // Compara os elementos
+        }
+    }
+    return true; // As matrizes são iguais
 }
 
 $(document).ready(function () {
