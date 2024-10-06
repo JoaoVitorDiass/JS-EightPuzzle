@@ -146,16 +146,6 @@ function movimentosPossiveis(matriz) {
     const { linha, coluna } = posicaoVazio;
     const movimentos = [];
 
-    // Verificar movimento para cima
-    if (linha > 0) {
-        movimentos.push(trocarValores(matriz, linha, coluna, linha - 1, coluna));
-    }
-
-    // Verificar movimento para baixo
-    if (linha < 2) {
-        movimentos.push(trocarValores(matriz, linha, coluna, linha + 1, coluna));
-    }
-
     // Verificar movimento para a esquerda
     if (coluna > 0) {
         movimentos.push(trocarValores(matriz, linha, coluna, linha, coluna - 1));
@@ -164,6 +154,16 @@ function movimentosPossiveis(matriz) {
     // Verificar movimento para a direita
     if (coluna < 2) {
         movimentos.push(trocarValores(matriz, linha, coluna, linha, coluna + 1));
+    }
+
+    // Verificar movimento para cima
+    if (linha > 0) {
+        movimentos.push(trocarValores(matriz, linha, coluna, linha - 1, coluna));
+    }
+
+    // Verificar movimento para baixo
+    if (linha < 2) {
+        movimentos.push(trocarValores(matriz, linha, coluna, linha + 1, coluna));
     }
 
     return movimentos;  // Retorna os estados possíveis
@@ -193,9 +193,90 @@ function arraysEqual(arr1, arr2) {
     return true; // As matrizes são iguais
 }
 
+function encontrarPosicaoVazia(matriz) {
+    for (let i = 0; i < matriz.length; i++) {
+        for (let j = 0; j < matriz[i].length; j++) {
+            if (matriz[i][j] === 0) {
+                return { linha: i, coluna: j };
+            }
+        }
+    }
+}
+
+function addButonsRunning() {
+    $("#buttons").append(
+        `<div id="buttons-running" class="card-footer text-center">
+            <button id="btn-avancar" class="btn btn-primary me-2" onclick="step()">
+                <i class="fas fa-forward"></i> <!-- Ícone Avançar para o final -->
+            </button>
+            <button id="btn-final" class="btn btn-primary me-2" onclick="full()">
+                <i class="fas fa-step-forward"></i> <!-- Ícone Avançar -->
+            </button>
+            <button id="btn-stop" class="btn btn-danger" 
+                    onclick="reset()">
+                <i class="fas fa-stop"></i> <!-- Ícone Parar -->
+            </button>
+        </div>`)
+    $('#button-solve').hide()
+}
+
+function getCard(element) {
+    return `<div class="card">
+                <div>${element[0][0]}</div>
+                <div>${element[0][1]}</div>
+                <div>${element[0][2]}</div>
+                <div>${element[1][0]}</div>
+                <div>${element[1][1]}</div>
+                <div>${element[1][2]}</div>
+                <div>${element[2][0]}</div>
+                <div>${element[2][1]}</div>
+                <div>${element[2][2]}</div>
+            </div>`
+}
+
+function addLine(arr, nivel, pai) {
+
+    let html = `
+        <table class="tabelinha">
+            <tr id="line${nivel}">
+    `
+    let percent = 100 / arr.length
+    $.each(arr, function (index, element) { 
+        html += `
+            <td id="card-${matrixToString(element).replaceAll(',','')}" style="width: ${percent}%">
+                ${getCard(element)}
+            </td>
+        `
+    });
+    html += `
+            </tr>
+        </table>
+    `
+
+    if(nivel == 0) {
+        $("#result").html(html)
+    }
+    else {
+        $(`#card-${matrixToString(pai).replaceAll(',','')}`).append(html)
+    }
+}
+
+function reset() {
+    $('#buttons-running').remove(); 
+    running=false; 
+    $('#result').html(''); 
+    $('#button-solve').show();
+    objetivo = null
+    arrVisitados.length = 0
+    pilha.reset()
+    pilhaNivel.reset()
+    fila.reset()
+    filaNivel.reset()
+}
 $(document).ready(function () {
     // Inicializa os quadrados
     initState("estado-inicial");
     initState("estado-final");
+
 
 });

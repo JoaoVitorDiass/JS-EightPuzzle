@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Árvore N-ária</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .tree-container {
+            display: flex;
+            justify-content: center;
+        }
+
+        .node {
+            border: 1px solid #333;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px;
+            position: relative;
+        }
+
+        .children {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="tree-container" id="tree-container">
+        <div class="node" id="node-0">
+            <span>Raiz</span>
+            <div class="children"></div>
+        </div>
+    </div>
+    <button id="add-child">Adicionar Filho</button>
+
+    <script>
+        let nodeCount = 1; // Contador de nós
+
+        document.getElementById("add-child").addEventListener("click", function () {
+            const parentNode = document.querySelector(".node"); // Seleciona a raiz
+            addChildNode(parentNode);
+        });
+
+        function addChildNode(parent) {
+            const childNode = document.createElement("div");
+            childNode.className = "node";
+            childNode.id = `node-${nodeCount}`;
+            childNode.innerHTML = `<span>Filho ${nodeCount}</span><div class="children"></div>`;
+
+            const childrenContainer = parent.querySelector(".children");
+            childrenContainer.appendChild(childNode);
+            nodeCount++;
+        }
+
+    </script>
+
+</body>
+
+</html>
