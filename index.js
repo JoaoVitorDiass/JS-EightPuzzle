@@ -281,8 +281,11 @@ function addLine(arr, nivel, pai) {
             );
             lines.push(line)
         });
+        lines.forEach(line => ()=>{
+            if(line) 
+                line.position()
+        });
     }
-    lines.forEach(line => line.position());
 }
 
 function reset() {
@@ -297,7 +300,37 @@ function reset() {
     fila.reset()
     filaNivel.reset()
 
-    lines.forEach(line => line.remove());
+    lines.forEach(line => {
+        if(line && line != undefined)
+            line.remove()
+    });
+
+    pilhaPercorridos.reset()
+    filaPercorridos.reset()
+
+    passos = 0 
+}
+
+function addResumo(line1, line2, line3) {
+
+    var $card = $('<div id="resumo"></div>').css({
+        position: 'absolute',       
+        top: '20px',                
+        left: '20px',               
+        backgroundColor: '#fff',    
+        padding: '15px',            
+        borderRadius: '5px',        
+        boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+        zIndex: 1000 
+    });
+
+    $card.append(`<p>${line1}</p>`);
+    $card.append(`<p>${line2}</p>`);
+    $card.append(`<p>${line3}</p>`);
+
+    $('#result').css('position', 'relative');
+    $('#result').append($card);
+
 }
 
 $(document).ready(function () {

@@ -1,6 +1,8 @@
 var running = false
 var objetivo
 
+var passos = 0
+
 const arrVisitados = []
 const lines = []
 
@@ -11,6 +13,8 @@ const pilhaPercorridos = new Stack()
 
 const fila = new PriorityQueue()
 const filaNivel = new PriorityQueue()
+
+const filaPercorridos = new PriorityQueue()
 
 function calculaDistanciaManhattan(matriz, matrizObjetivo) {
     var distancia = 0 
@@ -38,6 +42,8 @@ function matrixToString(matrix) {
 //----------------------------------
 
 function buscaProfundidade(matrizInicio, matrizObjetivo) {
+
+
     pilha.push(matrizInicio)
     pilhaNivel.push(0)
 
@@ -51,15 +57,18 @@ function buscaProfundidadeStep() {
         let matriz = pilha.pop()
         let nivel  = pilhaNivel.pop()
 
+        passos ++
+
         pilhaPercorridos.push([nivel,matrixToString(matriz).replaceAll(",","")])
 
         arrVisitados.push(matrixToString(matriz))
 
         if(arraysEqual(matriz,objetivo)) {
-            console.log("Achou!")
             running = false
             
-            pintaCaminho()
+            addResumo("Nós visitados: "+passos,"Tempo gasto: ","Tamanho: "+nivel)
+
+            pintaCaminhoPilha()
 
             $("#btn-final").hide()
             $("#btn-avancar").hide()
@@ -105,15 +114,18 @@ function buscaAestrelaStep() {
         let matriz = fila.dequeue().item
         let nivel  = filaNivel.dequeue().item
 
+        passos ++
+
         arrVisitados.push(matrixToString(matriz))
         
-        pilhaPercorridos.push([nivel,matrixToString(matriz).replaceAll(",","")])
+        // pilhaPercorridos.push([nivel,matrixToString(matriz).replaceAll(",","")])
+        // filaPercorridos.enqueue(matrixToString(matriz).replaceAll(",",""),nivel)
 
         if(arraysEqual(matriz, objetivo)) {
-            console.log("achou")
             running = false
 
-            pintaCaminho()
+            // pintaCaminhoFila()
+            addResumo("Nós visitados: "+passos,"Tempo gasto: ","Tamanho: "+nivel)
 
             $("#btn-final").hide()
             $("#btn-avancar").hide()
@@ -146,7 +158,7 @@ function buscaAestrelaFull() {
     }
 }
 
-function pintaCaminho() {
+function pintaCaminhoPilha() {
     
     while(!pilhaPercorridos.isEmpty()) {
         let elem = pilhaPercorridos.pop()
@@ -155,36 +167,50 @@ function pintaCaminho() {
     }
 }
 
+function pintaCaminhoFila() {
+    
+    while(!filaPercorridos.isEmpty()) {
+        let elem = filaPercorridos.dequeue()
+
+        $(`#nivel-${elem.priority}>#card-${elem.item}`).css('background-color', '#90ffcc');
+    }
+}
 
 function solve() {
 
-    running = true
-    addButonsRunning()
+    $(".leader-line").remove()
+    $("#resumo").remove()
+
+    passos = 0
 
     const heuristic = $("#algoritmo").val()
-    const matrizInicio = getMatrizAtual("estado-inicial")
-    const matrizObjetivo = getMatrizAtual("estado-final")
+    
+    if(heuristic == "") {
+        Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Selecione um tipo de algoritmo!",
+        });
+    }
+    else {
+        running = true
+        addButonsRunning()
 
-    objetivo = matrizObjetivo
+        const matrizInicio = getMatrizAtual("estado-inicial")
+        const matrizObjetivo = getMatrizAtual("estado-final")
 
+        objetivo = matrizObjetivo
 
-    switch (heuristic) {
+        switch (heuristic) {
 
-        case "buscaProfundidade":
-            buscaProfundidade(matrizInicio, matrizObjetivo)
-            break
-
-        case "buscaAestrela":
-            buscaAestrela(matrizInicio, matrizObjetivo)
-            break
-
-        default:
-            Swal.fire({
-                icon: "error",
-                title: "Oops...",
-                text: "Selecione um tipo de algoritmo!",
-            });
-            break
+            case "buscaProfundidade":
+                buscaProfundidade(matrizInicio, matrizObjetivo)
+                break
+    
+            case "buscaAestrela":
+                buscaAestrela(matrizInicio, matrizObjetivo)
+                break
+        }
     }
 }
 
