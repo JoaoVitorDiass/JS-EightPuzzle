@@ -221,44 +221,68 @@ function addButonsRunning() {
 }
 
 function getCard(element) {
-    return `<div class="card">
-                <div>${element[0][0]}</div>
-                <div>${element[0][1]}</div>
-                <div>${element[0][2]}</div>
-                <div>${element[1][0]}</div>
-                <div>${element[1][1]}</div>
-                <div>${element[1][2]}</div>
-                <div>${element[2][0]}</div>
-                <div>${element[2][1]}</div>
-                <div>${element[2][2]}</div>
-            </div>`
+    return `<div>${element[0][0]}</div>
+            <div>${element[0][1]}</div>
+            <div>${element[0][2]}</div>
+            <div>${element[1][0]}</div>
+            <div>${element[1][1]}</div>
+            <div>${element[1][2]}</div>
+            <div>${element[2][0]}</div>
+            <div>${element[2][1]}</div>
+            <div>${element[2][2]}</div>`
 }
 
 function addLine(arr, nivel, pai) {
 
-    let html = `
-        <table class="tabelinha">
-            <tr id="line${nivel}">
-    `
-    let percent = 100 / arr.length
-    $.each(arr, function (index, element) { 
-        html += `
-            <td id="card-${matrixToString(element).replaceAll(',','')}" style="width: ${percent}%">
-                ${getCard(element)}
-            </td>
-        `
-    });
-    html += `
-            </tr>
-        </table>
-    `
+    let idPai = matrixToString(pai).replaceAll(",","")
 
-    if(nivel == 0) {
-        $("#result").html(html)
+    if($(`#nivel-${nivel}`).length == 0) {
+        let html = `
+            <div id='nivel-${nivel}' class='row'>
+                ${
+                    arr.map(element => {
+                        let idFilho = matrixToString(element).replaceAll(",","")
+                        return `
+                            <div id="card-${idFilho}" class="card">
+                                ${getCard(element)}
+                            </div>
+                        `
+                    })
+                }
+            </div>
+        `
+        $("#result").append(html)
     }
     else {
-        $(`#card-${matrixToString(pai).replaceAll(',','')}`).append(html)
+        $(`#nivel-${nivel}`).append(arr.map(element => {
+            let idFilho = matrixToString(element).replaceAll(",","")
+            return `
+                <div id="card-${idFilho}" class="card">
+                    ${getCard(element)}
+                </div>
+            `
+        }))
     }
+
+    if(nivel > 0) {
+        arr.forEach(element => {
+            let idFilho = matrixToString(element).replaceAll(",","")
+
+            let line = new LeaderLine(
+                $(`#nivel-${nivel-1}>#card-${idPai}`)[0],
+                $(`#nivel-${nivel}>#card-${idFilho}`)[0],
+                { 
+                    startSocket: 'bottom',
+                    endSocket: 'top', 
+                    color: 'black', 
+                    size: 2, 
+                    endPlug: 'arrow' 
+                }
+            );
+            lines.push(line)
+        });
+    }
+    lines.forEach(line => line.position());
 }
 
 function reset() {
@@ -272,11 +296,18 @@ function reset() {
     pilhaNivel.reset()
     fila.reset()
     filaNivel.reset()
+
+    lines.forEach(line => line.remove());
 }
+
 $(document).ready(function () {
-    // Inicializa os quadrados
     initState("estado-inicial");
     initState("estado-final");
 
-
+    document.getElementById("result").addEventListener('resize', () => {
+        line.position();
+    });
+    document.getElementById('result').addEventListener('scroll', () => {
+        line.position(); // Reposiciona as setas ao rolar o conteúdo
+    });
 });

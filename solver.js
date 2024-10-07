@@ -2,9 +2,12 @@ var running = false
 var objetivo
 
 const arrVisitados = []
+const lines = []
 
 const pilha = new Stack()
 const pilhaNivel = new Stack()
+
+const pilhaPercorridos = new Stack()
 
 const fila = new PriorityQueue()
 const filaNivel = new PriorityQueue()
@@ -38,8 +41,7 @@ function buscaProfundidade(matrizInicio, matrizObjetivo) {
     pilha.push(matrizInicio)
     pilhaNivel.push(0)
 
-    
-    addLine([matrizInicio],0, [matrizInicio] ,0)
+    addLine([matrizInicio],0, [matrizInicio])
 }
 
 function buscaProfundidadeStep() {
@@ -49,12 +51,16 @@ function buscaProfundidadeStep() {
         let matriz = pilha.pop()
         let nivel  = pilhaNivel.pop()
 
+        pilhaPercorridos.push([nivel,matrixToString(matriz).replaceAll(",","")])
+
         arrVisitados.push(matrixToString(matriz))
 
         if(arraysEqual(matriz,objetivo)) {
             console.log("Achou!")
             running = false
             
+            pintaCaminho()
+
             $("#btn-final").hide()
             $("#btn-avancar").hide()
         }
@@ -63,18 +69,16 @@ function buscaProfundidadeStep() {
             movimentos = movimentosPossiveis(matriz)
 
             let possiveisMovimentos = movimentos.filter(element => {
-                if(!arrVisitados.includes(matrixToString(element))) {
+                if(!arrVisitados.includes(matrixToString(element)) || arraysEqual(element,objetivo)) {
                     return element
                 }
             })
 
-            if(possiveisMovimentos.length > 0 ) {
-                $.each(possiveisMovimentos, function (index, element) { 
-                    pilha.push(element)
-                    pilhaNivel.push(nivel+1)
-                })
-                addLine(possiveisMovimentos, nivel+1, matriz)
-            }
+            $.each(possiveisMovimentos, function (index, element) { 
+                pilha.push(element)
+                pilhaNivel.push(nivel+1)
+            })
+            addLine(possiveisMovimentos, nivel+1, matriz)
 
         }
     }
@@ -92,17 +96,25 @@ function buscaAestrela(matrizInicio, matrizObjetivo) {
     fila.enqueue(matrizInicio,distancia)
     filaNivel.enqueue(0,distancia)
 
-    addLine([matrizInicio],0,0)
+    addLine([matrizInicio],0,[matrizInicio])
 }
 
 function buscaAestrelaStep() {
+
     if(!fila.isEmpty()) {
         let matriz = fila.dequeue().item
         let nivel  = filaNivel.dequeue().item
 
+        arrVisitados.push(matrixToString(matriz))
+        
+        pilhaPercorridos.push([nivel,matrixToString(matriz).replaceAll(",","")])
+
         if(arraysEqual(matriz, objetivo)) {
             console.log("achou")
             running = false
+
+            pintaCaminho()
+
             $("#btn-final").hide()
             $("#btn-avancar").hide()
         }
@@ -110,30 +122,39 @@ function buscaAestrelaStep() {
             movimentos = movimentosPossiveis(matriz)
 
             let possiveisMovimentos = movimentos.filter(element => {
-                if(!arrVisitados.includes(matrixToString(element))) {
+                if(!arrVisitados.includes(matrixToString(element)) || arraysEqual(element,objetivo)) {
                     return element
                 }
             })
 
-            $.each(possiveisMovimentos.reverse(), function (index, element) { 
-            
+            $.each(possiveisMovimentos, function (index, element) { 
                 distancia = calculaDistanciaManhattan(element,objetivo)
                 fila.enqueue(element,distancia)
                 filaNivel.enqueue(nivel+1, distancia)
 
                 arrVisitados.push(matrixToString(element))
             })
-            addLine(possiveisMovimentos.reverse(), nivel+1)
+            addLine(possiveisMovimentos, nivel+1, matriz)
         }
     }
 }
 
-function buscaAestrelaStepFull() {
+function buscaAestrelaFull() {
     if (running) {
-        buscaProfundidadeStep();
-        requestAnimationFrame(buscaProfundidadeFull); // Chamando novamente
+        buscaAestrelaStep();
+        requestAnimationFrame(buscaAestrelaFull); // Chamando novamente
     }
 }
+
+function pintaCaminho() {
+    
+    while(!pilhaPercorridos.isEmpty()) {
+        let elem = pilhaPercorridos.pop()
+
+        $(`#nivel-${elem[0]}>#card-${elem[1]}`).css('background-color', '#90ffcc');
+    }
+}
+
 
 function solve() {
 
@@ -168,7 +189,6 @@ function solve() {
 }
 
 function step() {
-    console.log("clicou")
     const heuristic = $("#algoritmo").val()
 
     switch(heuristic) {
@@ -189,8 +209,8 @@ function full() {
         case "buscaProfundidade":
             buscaProfundidadeFull()
             break;
-        case "buscaAestrelaFull":
-            buscaAestrelaStep()
+        case "buscaAestrela":
+            buscaAestrelaFull()
             break;
     }
 }

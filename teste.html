@@ -1,74 +1,67 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
-
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Árvore N-ária</title>
-    <link rel="stylesheet" href="styles.css">
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conexão com LeaderLine</title>
+  <style>
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
 
-        .tree-container {
-            display: flex;
-            justify-content: center;
-        }
+    .parent, .child {
+      width: 100px;
+      height: 50px;
+      background-color: #007bff;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 10px;
+      border-radius: 8px;
+    }
 
-        .node {
-            border: 1px solid #333;
-            border-radius: 5px;
-            padding: 10px;
-            margin: 10px;
-            position: relative;
-        }
-
-        .children {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 20px;
-        }
-
-        button {
-            display: block;
-            margin: 20px auto;
-            padding: 10px 20px;
-            cursor: pointer;
-        }
-    </style>
+    .children {
+      display: flex;
+      justify-content: space-around;
+      width: 100%;
+    }
+  </style>
 </head>
-
 <body>
-    <div class="tree-container" id="tree-container">
-        <div class="node" id="node-0">
-            <span>Raiz</span>
-            <div class="children"></div>
-        </div>
+
+  <div class="container">
+    <div id="parent" class="parent">Pai</div>
+    <div class="children">
+      <div id="child1" class="child">Filho 1</div>
+      <div id="child2" class="child">Filho 2</div>
+      <div id="child3" class="child">Filho 3</div>
     </div>
-    <button id="add-child">Adicionar Filho</button>
+  </div>
 
-    <script>
-        let nodeCount = 1; // Contador de nós
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leader-line/1.0.7/leader-line.min.js"></script>
+  <script>
+    // Criar linhas conectando o pai aos filhos
+    new LeaderLine(
+      document.getElementById('parent'),
+      document.getElementById('child1'),
+      { color: 'black', size: 2, endPlug: 'arrow' }
+    );
 
-        document.getElementById("add-child").addEventListener("click", function () {
-            const parentNode = document.querySelector(".node"); // Seleciona a raiz
-            addChildNode(parentNode);
-        });
+    new LeaderLine(
+      document.getElementById('parent'),
+      document.getElementById('child2'),
+      { color: 'black', size: 2, endPlug: 'arrow' }
+    );
 
-        function addChildNode(parent) {
-            const childNode = document.createElement("div");
-            childNode.className = "node";
-            childNode.id = `node-${nodeCount}`;
-            childNode.innerHTML = `<span>Filho ${nodeCount}</span><div class="children"></div>`;
-
-            const childrenContainer = parent.querySelector(".children");
-            childrenContainer.appendChild(childNode);
-            nodeCount++;
-        }
-
-    </script>
+    new LeaderLine(
+      document.getElementById('parent'),
+      document.getElementById('child3'),
+      { color: 'black', size: 2, endPlug: 'arrow' }
+    );
+  </script>
 
 </body>
-
 </html>
