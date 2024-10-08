@@ -309,7 +309,8 @@ function reset() {
     filaPercorridos.reset()
 
     passos = 0 
-    nivelMax = 0
+    nivelMax = 1
+    horaini = 0
 }
 
 function addResumo(line1, line2, line3) {

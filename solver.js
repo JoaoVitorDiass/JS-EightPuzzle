@@ -17,6 +17,8 @@ const filaNivel = new PriorityQueue()
 
 const filaPercorridos = new PriorityQueue()
 
+var horaini
+
 function calculaDistanciaManhattan(matriz, matrizObjetivo) {
     var distancia = 0 
     for (let i = 0; i < 3; i++) {
@@ -44,6 +46,7 @@ function matrixToString(matrix) {
 
 function buscaProfundidade(matrizInicio, matrizObjetivo) {
 
+    horaini = new Date();
 
     pilha.push(matrizInicio)
     pilhaNivel.push(0)
@@ -71,7 +74,14 @@ function buscaProfundidadeStep() {
         if(arraysEqual(matriz,objetivo)) {
             running = false
             
-            addResumo("Nós visitados: "+passos,"Tempo gasto: ","Tamanho: "+(nivel+1))
+            console.log(horaini)
+            console.log(new Date())
+            
+            let diferenca = (new Date()).getTime() - horaini.getTime();
+
+            var diferencaSegundos = Math.floor(diferenca / 1000);
+
+            addResumo("Nós visitados: "+passos,"Tempo gasto: "+diferencaSegundos+" s","Tamanho: "+(nivel+1))
 
             pintaCaminhoPilha()
 
@@ -113,6 +123,8 @@ function buscaAestrela(matrizInicio, matrizObjetivo) {
     fila.enqueue(matrizInicio,distancia)
     filaNivel.enqueue(0,distancia)
 
+    horaini = new Date()
+
     addLine([matrizInicio],0,[matrizInicio])
 }
 
@@ -122,6 +134,10 @@ function buscaAestrelaStep() {
         let matriz = fila.dequeue().item
         let nivel  = filaNivel.dequeue().item
 
+        if( nivelMax < nivel ){
+            nivelMax = nivel
+        }
+
         passos ++
 
         filaPercorridos.enqueue(matrixToString(matriz).replaceAll(",",""),nivel)
@@ -129,8 +145,15 @@ function buscaAestrelaStep() {
         if(arraysEqual(matriz, objetivo)) {
             running = false
 
-            pintaCaminhoFila()
-            addResumo("Nós visitados: "+passos,"Tempo gasto: ","Tamanho: "+nivel)
+            // console.log(horaini)
+            // console.log(new Date())
+
+            let diferenca =  (new Date()).getTime() - horaini.getTime();
+
+            var diferencaSegundos = Math.floor(diferenca / 1000);
+
+            // pintaCaminhoFila()
+            addResumo("Nós visitados: "+passos,"Tempo gasto: "+diferencaSegundos+ " s","Tamanho: "+(nivelMax+1))
 
             $("#btn-final").hide()
             $("#btn-avancar").hide()
