@@ -113,6 +113,8 @@ p {
 #result {
     padding: 3%;
 
+    /* overflow-y: auto; */
+
     .row {
         width: 100%;
 

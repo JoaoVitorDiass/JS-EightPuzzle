@@ -309,6 +309,7 @@ function reset() {
     filaPercorridos.reset()
 
     passos = 0 
+    nivelMax = 0
 }
 
 function addResumo(line1, line2, line3) {
@@ -342,5 +343,8 @@ $(document).ready(function () {
     });
     document.getElementById('result').addEventListener('scroll', () => {
         line.position(); // Reposiciona as setas ao rolar o conteúdo
+    });
+    window.addEventListener('scroll', () => {
+        line.position();
     });
 });

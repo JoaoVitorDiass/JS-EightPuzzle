@@ -2,6 +2,7 @@ var running = false
 var objetivo
 
 var passos = 0
+var nivelMax = 0
 
 const arrVisitados = []
 const lines = []
@@ -57,6 +58,10 @@ function buscaProfundidadeStep() {
         let matriz = pilha.pop()
         let nivel  = pilhaNivel.pop()
 
+        if( nivelMax < nivel ){
+            nivelMax = nivel
+        }
+
         passos ++
 
         pilhaPercorridos.push([nivel,matrixToString(matriz).replaceAll(",","")])
@@ -66,7 +71,7 @@ function buscaProfundidadeStep() {
         if(arraysEqual(matriz,objetivo)) {
             running = false
             
-            addResumo("Nós visitados: "+passos,"Tempo gasto: ","Tamanho: "+nivel)
+            addResumo("Nós visitados: "+passos,"Tempo gasto: ","Tamanho: "+(nivel+1))
 
             pintaCaminhoPilha()
 
@@ -89,6 +94,9 @@ function buscaProfundidadeStep() {
             })
             addLine(possiveisMovimentos, nivel+1, matriz)
 
+            if(possiveisMovimentos.length == 0 ) {
+                pilhaPercorridos.pop()
+            }
         }
     }
 }
@@ -116,15 +124,12 @@ function buscaAestrelaStep() {
 
         passos ++
 
-        arrVisitados.push(matrixToString(matriz))
-        
-        // pilhaPercorridos.push([nivel,matrixToString(matriz).replaceAll(",","")])
-        // filaPercorridos.enqueue(matrixToString(matriz).replaceAll(",",""),nivel)
+        filaPercorridos.enqueue(matrixToString(matriz).replaceAll(",",""),nivel)
 
         if(arraysEqual(matriz, objetivo)) {
             running = false
 
-            // pintaCaminhoFila()
+            pintaCaminhoFila()
             addResumo("Nós visitados: "+passos,"Tempo gasto: ","Tamanho: "+nivel)
 
             $("#btn-final").hide()
@@ -147,6 +152,7 @@ function buscaAestrelaStep() {
                 arrVisitados.push(matrixToString(element))
             })
             addLine(possiveisMovimentos, nivel+1, matriz)
+
         }
     }
 }
