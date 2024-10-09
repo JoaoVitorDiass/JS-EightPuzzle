@@ -20,9 +20,11 @@ const filaPercorridos = new PriorityQueue()
 var horaini
 
 function calculaDistanciaManhattan(matriz, matrizObjetivo) {
+
+    console.log(matriz, matrizObjetivo)
     var distancia = 0 
     for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < j; j++) {
+        for (let j = 0; j < 3; j++) {
             for (let k = 0; k < 3; k++) {
                 for (let l = 0; l < 3; l++) {
                     let estadoAtual = matriz[i][j]
@@ -35,6 +37,7 @@ function calculaDistanciaManhattan(matriz, matrizObjetivo) {
             }
         }
     }
+    console.log(distancia)
     return distancia
 }
 
@@ -119,6 +122,7 @@ function buscaProfundidadeFull() {
 }
 
 function buscaAestrela(matrizInicio, matrizObjetivo) {
+    objetivo = matrizObjetivo
     distancia = calculaDistanciaManhattan(matrizInicio,matrizObjetivo)
     fila.enqueue(matrizInicio,distancia)
     filaNivel.enqueue(0,distancia)
@@ -134,6 +138,7 @@ function buscaAestrelaStep() {
         let matriz = fila.dequeue().item
         let nivel  = filaNivel.dequeue().item
 
+        console.log(nivel)
         if( nivelMax < nivel ){
             nivelMax = nivel
         }
@@ -152,7 +157,7 @@ function buscaAestrelaStep() {
 
             var diferencaSegundos = Math.floor(diferenca / 1000);
 
-            // pintaCaminhoFila()
+            pintaCaminhoFila()
             addResumo("Nós visitados: "+passos,"Tempo gasto: "+diferencaSegundos+ " s","Tamanho: "+(nivelMax+1))
 
             $("#btn-final").hide()
