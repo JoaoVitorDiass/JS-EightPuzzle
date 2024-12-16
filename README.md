@@ -22,12 +22,12 @@ Este projeto é uma implementação de um jogo de resolução de problemas utili
 
 1. Clone este repositório:
    ```bash
-   git clone https://github.com/seu-usuario/resolucao-problemas-busca.git
+   git clone https://github.com/JoaoVitorDiass/JS-EightPuzzle.git
    ```
 
 2. Navegue até o diretório do projeto:
    ```bash
-   cd resolucao-problemas-busca
+   cd JS-EightPuzzle
    ```
 
 3. Abra o arquivo `index.html` no navegador
