@@ -37,10 +37,9 @@ Este projeto é uma implementação de um jogo de resolução de problemas utili
    - Escolha a função de avaliação e a técnica de busca.
    - Visualize a solução passo a passo.
 
-## 🎨 Tecnologias Utilizadas
-
-- **HTML**: Estrutura do jogo e interface.
-- **CSS**: Estilização visual.
-- **JavaScript**: Implementação da lógica do jogo e algoritmos de busca.
-
 ---
+
+## Licença
+
+Este projeto está licenciado sob a [Licença MIT](LICENSE).
+
